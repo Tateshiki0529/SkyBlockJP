@@ -22,7 +22,7 @@
 		 * @see MojangAPI::convert2UUID (Referrence: class.MojangAPI.php)
 		 */
 		public function __construct($name) {
-			parent::__construct(sprintf($textFormat, $name), 10101);
+			parent::__construct(sprintf($this->textFormat, $name), 10101);
 		}
 	}
 ?>
