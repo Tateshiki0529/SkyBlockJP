@@ -30,13 +30,13 @@
 		}
 
 		/**
-		 * [CONVERT] プレイヤー名->UUIDへの変換 (convert2UUID)
+		 * [CONVERT] プレイヤー名 --> UUIDへの変換 (convert2UUID)
 		 * 
 		 * 与えられたユーザー名をUUIDへ変換する。
 		 * 
 		 * @access public
 		 * @param string $name Minecraftユーザー名
-		 * @param integer ($timestamp 基準となるタイムスタンプ) (Default: time())
+		 * @param integer ($timestamp 基準となるタイムスタンプ) (Default: null --> time())
 		 * @return string $uuid ユーザー名に対応したUUID
 		 * @throws UsernameNotFountException ユーザー名が存在しないときの例外
 		 */
