@@ -6,7 +6,7 @@
 	require_once __DIR__."/exception.UsernameNotFoundException.php";
 
 	/**
-	 * [CLASS] MojangAPI操作用クラス (MojangAPI)
+	 * [API] MojangAPI操作用クラス (MojangAPI)
 	 * 
 	 * MojangAPIを用いて処理を行う。
 	 * 
@@ -15,7 +15,7 @@
 	 * @copyright Tateshiki Lab. All Rights Reserved.
 	 * @category Class
 	 * @package Controller
-	**/
+	 */
 	class MojangAPI {
 		private $url;
 
@@ -26,7 +26,7 @@
 		 * 
 		 * @access public
 		 * @return void (返り値なし)
-		**/
+		 */
 		public function __construct() {
 			$this->url = MOJANG_API_URL;
 		}
@@ -40,7 +40,7 @@
 		 * @param string $name Minecraftユーザー名
 		 * @param integer ($timestamp 基準となるタイムスタンプ) (Default: null --> time())
 		 * @return string $uuid ユーザー名に対応したUUID
-		 * @throws UsernameNotFountException ユーザー名が存在しないときの例外
+		 * @throws UsernameNotFoundException ユーザー名が存在しないときの例外
 		 */
 		public function convert2UUID($name, $timestamp = null) {
 			if (is_null($timestamp)) $timestamp = time();
@@ -50,7 +50,7 @@
 			]);
 			$data = json_decode(file_get_contents($endpoint.$params), true);
 			if (is_null($data)) throw new UsernameNotFoundException($name);
-			return $data["id"];
+			return str_replace("-", "", $data["id"]);
 		}
 	}
 ?>
