@@ -49,7 +49,7 @@
 				"at" => $timestamp
 			]);
 			$data = json_decode(file_get_contents($endpoint.$params), true);
-			if (is_null($data)) throw new UsernameNotFountException($name);
+			if (is_null($data)) throw new UsernameNotFoundException($name);
 			return $data["id"];
 		}
 	}
