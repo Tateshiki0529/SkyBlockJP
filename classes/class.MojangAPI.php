@@ -38,6 +38,7 @@
 		 * @param string $name Minecraftユーザー名
 		 * @param integer ($timestamp 基準となるタイムスタンプ) (Default: time())
 		 * @return string $uuid ユーザー名に対応したUUID
+		 * @throws UsernameNotFountException ユーザー名が存在しないときの例外
 		 */
 		public function convert2UUID($name, $timestamp = null) {
 			if (is_null($timestamp)) $timestamp = time();
@@ -46,7 +47,8 @@
 				"at" => $timestamp
 			]);
 			$data = json_decode(file_get_contents($endpoint.$params), true);
-			var_dump($data);
+			if (is_null($data)) throw new UsernameNotFountException($name);
+			return $data["id"];
 		}
 	}
 ?>
