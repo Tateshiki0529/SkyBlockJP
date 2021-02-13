@@ -2,6 +2,8 @@
 
 	// コンフィグ読み込み
 	require_once __DIR__."/config.php";
+	// 例外定義ファイル読み込み
+	require_once __DIR__."/exception.UsernameNotFoundException.php";
 
 	/**
 	 * [CLASS] MojangAPI操作用クラス (MojangAPI)
@@ -9,7 +11,7 @@
 	 * MojangAPIを用いて処理を行う。
 	 * 
 	 * @access public
-	 * @author tateshiki0529 <info@ttsk3.net>
+	 * @author tateshiki0529 <lab@ttsk3.net>
 	 * @copyright Tateshiki Lab. All Rights Reserved.
 	 * @category Class
 	 * @package Controller
