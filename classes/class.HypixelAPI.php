@@ -67,18 +67,22 @@
 			if (!is_null($this->getPlayer_cache)) return $this->getPlayer_cache;
 			$endpoint = $this->url."/player";
 			$params = "?".http_build_query([
-				"uuid" => preg_replace("/[0-9a-f]{8}[0-9a-f]{4}[0-9a-f]{4}[0-9a-f]{4}[0-9a-f]{12}/", "$1-$2-$3-$4-$5", $this->id),
+				"uuid" => preg_replace("/([0-9a-f]{8})([0-9a-f]{4})([0-9a-f]{4})([0-9a-f]{4})([0-9a-f]{12})/", "$1-$2-$3-$4-$5", $this->id),
 				"key" => $this->key
 			]);
-			var_dump($endpoint.$params);
+			#var_dump($endpoint.$params);
 			$data = json_decode(file_get_contents($endpoint.$params, false, $this->context), true);
-			var_dump($data);
+			#var_dump($data);
 			if (strpos($http_response_header[0], "422") !== false) {
 				throw new HypixelAPIUnprocessableException();
 			} elseif (is_null($data["player"])) {
 				throw new HypixelAPIPlayerNotFoundException();
 			} elseif ($data["success"] == false) {
-				throw new HypixelAPIUnknownException();
+				if (isset($data["cause"])) {
+					throw new HypixelAPIUnprocessableException();
+				} else {
+					throw new HypixelAPIUnknownException();
+				}
 			}
 			if (is_null($this->getPlayer_cache)) $this->getPlayer_cache = $data;
 			return $data;
