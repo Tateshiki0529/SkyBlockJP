@@ -1,5 +1,8 @@
 <?php 
 
+	// ライブラリ読み込み
+	require_once __DIR__."/../vendor/autoload.php";
+
 	// コンフィグ読み込み
 	require_once __DIR__."/config.php";
 
@@ -10,6 +13,8 @@
 	require_once __DIR__."/exception.HypixelAPIUnprocessableException.php";
 	require_once __DIR__."/exception.HypixelAPIPlayerNotFoundException.php";
 	require_once __DIR__."/exception.HypixelAPIUnknownException.php";
+
+	use rickselby\NBT;
 
 	/**
 	 * [API] HypixelAPI操作用クラス (HypixelAPI)
@@ -30,6 +35,8 @@
 		private $context;
 
 		private $getPlayer_cache;
+		private $getSBProfileIDs_cache;
+		private $getSBProfiles_cache;
 
 		/**
 		 * [INIT] コンストラクタ (__construct)
@@ -58,7 +65,7 @@
 		 * プレイヤー情報を取得して返す。
 		 * 
 		 * @access public
-		 * @param string ($id 取得するユーザーのUUID)
+		 * @param string ($id 取得するユーザーのUUID) (Default: null --> $this->id)
 		 * @return array $data 取得したプレイヤー
 		 * @throws HypixelAPIUnprocessableException 処理できなかった場合
 		 * @throws HypixelAPIPlayerNotFoundException Hypixelプレイヤーが存在しなかった場合
@@ -102,6 +109,7 @@
 		 * SkyBlockのプロファイル情報を取得する。
 		 * 
 		 * @access public
+		 * @param string ($id 取得するユーザーのUUID) (Default: null --> $this->id)
 		 * @return array $data プロファイル情報
 		 * @throws HypixelAPIUnprocessableException 処理できなかった場合
 		 * @throws HypixelAPIPlayerNotFoundException Hypixelプレイヤーが存在しなかった場合
@@ -109,14 +117,50 @@
 		 * @throws SkyBlockPlayerNotFoundException SkyBlockプレイヤーが存在しなかった場合
 		 * @todo 例外処理未実装
 		 */
-		public function getSBProfileIDs() {
+		public function getSBProfileIDs($id = null) {
+			if (is_null($id)) {
+				$this->getPlayer_cache = $this->getPlayer($id);
+			}
+			if (!is_null($this->getSBProfileIDs_cache)) return $this->getSBProfileIDs_cache;
 			if (is_null($this->getPlayer_cache)) {
 				$this->getPlayer_cache = $this->getPlayer($this->id);
 			}
 			foreach ($this->getPlayer_cache["player"]["stats"]["SkyBlock"]["profiles"] as $k => $v) {
 				$return["profiles"][$v["cute_name"]] = $v["profile_id"];
 			}
+			if (is_null($this->getSBProfileIDs_cache)) $this->getSBProfileIDs = $return;
 			return $return;
+		}
+
+		/**
+		 * [GET] SkyBlockデータ取得 (getSBProfiles)
+		 * 
+		 * SkyBlockデータの詳細を取得する。
+		 * 
+		 * @access public
+		 * @param string $name (プロファイル名 (Example: Coconut, Peach etc...)) (Default[非推奨]: null --> reset($this->getSBProfileIDs_cache))
+		 * @return array $data SkyBlockデータ
+		 * @throws SkyBlockNameNotFoundException プロファイル名が存在しない時に発生
+		 */
+		public function getSBProfiles($name = null) {
+			if (!is_null($this->getSBProfiles_cache)) return $this->getSBProfiles_cache;
+			if (is_null($this->getSBProfileIDs_cache)) {
+				$this->getSBProfileIDs_cache = $this->getSBProfileIDs($this->id);
+			}
+			if (is_null($name)) {
+				reset($this->getSBProfileIDs_cache["profiles"]);
+				$profile = key($this->getSBProfileIDs_cache["profiles"]);
+			} else {
+				$profile = $name;
+			}
+			$endpoint = $this->url."/skyblock/profile";
+			$params = "?".http_build_query([
+				"profile" => $this->getSBProfileIDs_cache["profiles"][$profile],
+				"key" => $this->key
+			]);
+			$data = json_decode(file_get_contents($endpoint.$params, false, $this->context), true);
+			if (is_null($this->getSBProfiles_cache)) $this->getSBProfiles_cache = $data;
+			return $data;
 		}
 
 		/**

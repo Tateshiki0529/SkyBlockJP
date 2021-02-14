@@ -3,3 +3,5 @@ classes/config.php
 classes/classtest.php
 vendor
 composer.*
+statsGen.php
+itemdata.*
