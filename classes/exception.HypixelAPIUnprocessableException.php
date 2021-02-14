@@ -21,7 +21,7 @@
 		 * @see HypixelAPI::get* (Referrence: class.HypixelAPI.php)
 		 */
 		public function __construct() {
-			parent::__construct(sprintf($this->textFormat));
+			parent::__construct($this->textFormat);
 		}
 	}
 ?>

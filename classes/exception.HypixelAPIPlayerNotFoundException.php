@@ -11,7 +11,7 @@
 	 * @package Exception
 	 */
 	class HypixelAPIPlayerNotFoundException extends Exception {
-		private $textFormat = "'%s' というユーザー名は存在しません。";
+		private $textFormat = "ユーザーが存在しません。";
 		/**
 		 * [INIT] コンストラクタ (__construct)
 		 * 
@@ -20,8 +20,8 @@
 		 * @throws HypixelAPIPlayerNotFoundException プレイヤー情報がなかった場合に発生する
 		 * @see HypixelAPI::get* (Referrence: class.HypixelAPI.php)
 		 */
-		public function __construct($name) {
-			parent::__construct(sprintf($this->textFormat, $name));
+		public function __construct() {
+			parent::__construct($this->textFormat);
 		}
 	}
 ?>
