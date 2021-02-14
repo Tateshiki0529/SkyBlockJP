@@ -58,18 +58,26 @@
 		 * プレイヤー情報を取得して返す。
 		 * 
 		 * @access public
+		 * @param string ($id 取得するユーザーのUUID)
 		 * @return array $data 取得したプレイヤー
 		 * @throws HypixelAPIUnprocessableException 処理できなかった場合
 		 * @throws HypixelAPIPlayerNotFoundException Hypixelプレイヤーが存在しなかった場合
 		 * @throws HypixelAPIUnknownException 不明なエラー
 		 */
-		public function getPlayer() {
+		public function getPlayer($id = null) {
 			if (!is_null($this->getPlayer_cache)) return $this->getPlayer_cache;
 			$endpoint = $this->url."/player";
-			$params = "?".http_build_query([
-				"uuid" => preg_replace("/([0-9a-f]{8})([0-9a-f]{4})([0-9a-f]{4})([0-9a-f]{4})([0-9a-f]{12})/", "$1-$2-$3-$4-$5", $this->id),
-				"key" => $this->key
-			]);
+			if (!is_null($id)) {
+				$params = "?".http_build_query([
+					"uuid" => preg_replace("/([0-9a-f]{8})([0-9a-f]{4})([0-9a-f]{4})([0-9a-f]{4})([0-9a-f]{12})/", "$1-$2-$3-$4-$5", $id),
+					"key" => $this->key
+				]);
+			} else {
+				$params = "?".http_build_query([
+					"uuid" => preg_replace("/([0-9a-f]{8})([0-9a-f]{4})([0-9a-f]{4})([0-9a-f]{4})([0-9a-f]{12})/", "$1-$2-$3-$4-$5", $this->id),
+					"key" => $this->key
+				]);
+			}
 			#var_dump($endpoint.$params);
 			$data = json_decode(file_get_contents($endpoint.$params, false, $this->context), true);
 			#var_dump($data);
@@ -86,6 +94,29 @@
 			}
 			if (is_null($this->getPlayer_cache)) $this->getPlayer_cache = $data;
 			return $data;
+		}
+
+		/**
+		 * [GET] SkyBlockプロファイル情報取得 (getSBProfileIDs)
+		 * 
+		 * SkyBlockのプロファイル情報を取得する。
+		 * 
+		 * @access public
+		 * @return array $data プロファイル情報
+		 * @throws HypixelAPIUnprocessableException 処理できなかった場合
+		 * @throws HypixelAPIPlayerNotFoundException Hypixelプレイヤーが存在しなかった場合
+		 * @throws HypixelAPIUnknownException 不明なエラー
+		 * @throws SkyBlockPlayerNotFoundException SkyBlockプレイヤーが存在しなかった場合
+		 * @todo 例外処理未実装
+		 */
+		public function getSBProfileIDs() {
+			if (is_null($this->getPlayer_cache)) {
+				$this->getPlayer_cache = $this->getPlayer($this->id);
+			}
+			foreach ($this->getPlayer_cache["player"]["stats"]["SkyBlock"]["profiles"] as $k => $v) {
+				$return["profiles"][$v["cute_name"]] = $v["profile_id"];
+			}
+			return $return;
 		}
 
 		/**
