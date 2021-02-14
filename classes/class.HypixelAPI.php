@@ -6,6 +6,11 @@
 	// クラス読み込み
 	require_once __DIR__."/class.MojangAPI.php";
 
+	// 例外読み込み
+	require_once __DIR__."/exception.HypixelAPIUnprocessableException.php";
+	require_once __DIR__."/exception.HypixelAPIPlayerNotFoundException.php";
+	require_once __DIR__."/exception.HypixelAPIUnknownException.php";
+
 	/**
 	 * [API] HypixelAPI操作用クラス (HypixelAPI)
 	 * 
