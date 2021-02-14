@@ -1,3 +1,5 @@
-config.php
+classes/config.php
 #.gitignore
 classes/classtest.php
+vendor
+composer.*
