@@ -17,8 +17,8 @@
 
 	// 例外ファイルの読み込み
 	include_once dirname(__FILE__)."/exceptions.MojangAPI.php";
-	#include_once dirname(__FILE__)."/exceptions.HypixelAPI.php";
+	#include_once dirname(__FILE__)."/exceptions.SkyBlockAPI.php";
 
 	// クラスファイルの読み込み
 	include_once dirname(__FILE__)."/class.MojangAPI.php";
-	include_once dirname(__FILE__)."/class.HypixelAPI.php";
+	include_once dirname(__FILE__)."/class.SkyBlockAPI.php";
