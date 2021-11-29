@@ -1,2 +1,3 @@
 SkyBlockJP.code-workspace
 libs/config.php
+tests/*
